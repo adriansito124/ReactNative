@@ -4,9 +4,9 @@ export const Item = ({name, age, date} : {name: string, age: string, date: strin
     return(
         <>
             <View style={styles.itemList}>
-                <Text>{name}</Text>
-                <Text>{age}</Text>
-                <Text>{date}</Text>
+                <Text style={styles.teixto}>{name}</Text>
+                <Text style={styles.teixto}>{age}</Text>
+                <Text style={styles.teixto}>{date}</Text>
             </View>
         </>
     );
@@ -22,5 +22,8 @@ const styles = StyleSheet.create({
         margin: 10,
         height: 80,
         paddingHorizontal: 30,
+    },
+    teixto: {
+        fontSize: 15,
     }
 })

@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     zIndex: 99,
   },
   center: {
+    fontSize: 25,
     textAlign: "center",
     shadowColor: "#171717",
     shadowOffset: {width: 1, height: 5},
