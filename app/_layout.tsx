@@ -10,6 +10,8 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     Anton: require("../assets/fonts/Anton-Regular.ttf"),
+    Nunito: require("../assets/fonts/Nunito-VariableFont_wght.ttf"),
+    Rale: require("../assets/fonts/Raleway-VariableFont_wght.ttf"),
     Inter: Inter_900Black,
   });
 
