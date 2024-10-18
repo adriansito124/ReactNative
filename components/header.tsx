@@ -6,6 +6,7 @@ export const Header = ({image} : {image: ImageSourcePropType}) => {
         <>
             <View style={styles.background}>
                 <Text style={styles.tezto}>Header exemplo</Text>
+                <Text style={styles.fontediferente}>Testando outra fonte</Text>
                 <Image source={image}/>
             </View>
         </>
@@ -24,6 +25,11 @@ const styles = StyleSheet.create({
     tezto: {
         color: "#ffff",
         fontWeight: "700",
-        fontSize: 30
+        fontSize: 30,
+        fontFamily: "Inter",
+    },
+    fontediferente: {
+        fontFamily: "Anton",
+        color: "#FFFFFFFF",
     }
 })
