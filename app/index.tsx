@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -11,13 +11,37 @@ import {
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
+import { signInWithEmailAndPassword } from "@firebase/auth";
+import { FIREBASE_AUTH } from "@/firebaseConfig";
+import { RotateInDownLeft } from "react-native-reanimated";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
 
+  const auth = FIREBASE_AUTH;
+
   const onPress = () => {
     router.push("/(tabs)");
+  };
+
+  useEffect(() => {
+    console.log(auth.currentUser);
+  }, [auth.currentUser]);
+
+  useEffect(() => {
+    console.log(email, pass);
+  }, [email, pass]);
+
+  const signIn = () => {
+    signInWithEmailAndPassword(auth, email, pass)
+      .then((dadosUsuario) => {
+        console.log(dadosUsuario);
+        router.push("/(tabs)");
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   };
 
   return (
@@ -37,6 +61,7 @@ export default function Login() {
               onChangeText={setEmail}
               value={email}
               placeholder="Email Address"
+              placeholderTextColor="#ffffff"
               keyboardType="email-address"
             />
             <TextInput
@@ -44,14 +69,33 @@ export default function Login() {
               onChangeText={setPass}
               value={pass}
               placeholder="Password"
+              placeholderTextColor="#ffffff"
               keyboardType="default"
               secureTextEntry={true}
             />
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={onPress}>
+          <TouchableOpacity style={styles.button} onPress={signIn}>
             <Text style={styles.btntext}>Login</Text>
           </TouchableOpacity>
+
+          <View style={styles.putz}>
+            <View style={styles.hori}>
+              <View style={styles.risco}></View>
+              <Text style={styles.braco}>Or Login with</Text>
+              <View style={styles.risco}></View>
+            </View>
+
+            <View style={styles.hori}>
+              <TouchableOpacity style={styles.minibutton}>
+                <Text style={styles.btntext}>Google</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.minibutton}>
+                <Text style={styles.btntext}>Facebook</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
 
         <Link href={"/register"}>Cadastrar novo Usuario</Link>
@@ -66,7 +110,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 3 / 4,
     padding: 20, // Adiciona um pouco de padding
-    gap: 80,
+    gap: 60,
+    marginTop: 80,
   },
   centrol: {
     alignItems: "center",
@@ -98,9 +143,10 @@ const styles = StyleSheet.create({
     width: 250,
     borderWidth: 1,
     borderColor: "#FFFFFFFF",
-    backgroundColor: "#D7C7F2FF",
+    backgroundColor: "#D0BEEEFF",
     borderRadius: 8, // Adiciona bordas arredondadas
     marginBottom: 5, // Espaçamento entre os inputs
+    color: "#ffffff",
   },
   button: {
     backgroundColor: "#FFFFFF",
@@ -131,5 +177,40 @@ const styles = StyleSheet.create({
   imagen: {
     height: 90,
     width: 67,
+  },
+  risco: {
+    height: 1,
+    width: 72,
+    backgroundColor: "#ffffff",
+  },
+  hori: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  braco: {
+    color: "#ffffff",
+  },
+  minibutton: {
+    backgroundColor: "#FFFFFF",
+    padding: 10,
+    height: 45,
+    width: 125,
+    justifyContent: "center",
+    borderRadius: 8, // Adiciona bordas arredondadas
+    alignItems: "center", // Centraliza o texto no botão
+
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.19,
+    shadowRadius: 5.62,
+    elevation: 6,
+  },
+  putz: {
+    alignItems: "center",
+    gap: 20,
   },
 });
