@@ -7,13 +7,15 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-
-import { Image } from "expo-image";
+import { Image } from "react-native"; 
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
 import { signInWithEmailAndPassword } from "@firebase/auth";
 import { FIREBASE_AUTH } from "@/firebaseConfig";
-import { RotateInDownLeft } from "react-native-reanimated";
+import React from "react";
+
+const image = require("../assets/images/facebook.png");
+const image2 = require("../assets/images/google.png");
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -88,11 +90,11 @@ export default function Login() {
 
             <View style={styles.hori}>
               <TouchableOpacity style={styles.minibutton}>
-                <Text style={styles.btntext}>Google</Text>
+                <Image source={image2} style={styles.imagen2} />
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.minibutton}>
-                <Text style={styles.btntext}>Facebook</Text>
+                <Image source={image} style={styles.imagen} />
               </TouchableOpacity>
             </View>
           </View>
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flex: 3 / 4,
-    padding: 20, // Adiciona um pouco de padding
+    padding: 20,
     gap: 60,
     marginTop: 80,
   },
@@ -144,8 +146,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#FFFFFFFF",
     backgroundColor: "#D0BEEEFF",
-    borderRadius: 8, // Adiciona bordas arredondadas
-    marginBottom: 5, // Espaçamento entre os inputs
+    borderRadius: 8,
+    marginBottom: 5,
     color: "#ffffff",
   },
   button: {
@@ -154,8 +156,8 @@ const styles = StyleSheet.create({
     height: 45,
     width: 250,
     justifyContent: "center",
-    borderRadius: 8, // Adiciona bordas arredondadas
-    alignItems: "center", // Centraliza o texto no botão
+    borderRadius: 8,
+    alignItems: "center",
 
     shadowColor: "#000000",
     shadowOffset: {
@@ -172,11 +174,15 @@ const styles = StyleSheet.create({
     color: "#000000FF",
   },
   background: {
-    flex: 1, // Faz o gradiente ocupar toda a tela
+    flex: 1,
   },
   imagen: {
-    height: 90,
-    width: 67,
+    height: 35,
+    width: 35,
+  },
+  imagen2: {
+    height: 30,
+    width: 30,
   },
   risco: {
     height: 1,
@@ -193,12 +199,11 @@ const styles = StyleSheet.create({
   },
   minibutton: {
     backgroundColor: "#FFFFFF",
-    padding: 10,
     height: 45,
     width: 125,
     justifyContent: "center",
-    borderRadius: 8, // Adiciona bordas arredondadas
-    alignItems: "center", // Centraliza o texto no botão
+    borderRadius: 8,
+    alignItems: "center",
 
     shadowColor: "#000000",
     shadowOffset: {
