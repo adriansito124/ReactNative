@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { Image } from "react-native"; 
+import { Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
 import { signInWithEmailAndPassword } from "@firebase/auth";
@@ -39,7 +39,12 @@ export default function Login() {
     signInWithEmailAndPassword(auth, email, pass)
       .then((dadosUsuario) => {
         console.log(dadosUsuario);
-        router.push("/(tabs)");
+        if (email == "admin@adm.adm" && pass == "adm1234") {
+          console.log("ADM");
+          router.push("/admin");
+        } else {
+          router.push("/(tabs)");
+        }
       })
       .catch((err) => {
         alert(err.message);
@@ -94,14 +99,18 @@ export default function Login() {
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.minibutton}>
-                <Image source={image} style={styles.imagen} />
+                <Image source={image} style={styles.imagen2} />
               </TouchableOpacity>
             </View>
           </View>
         </View>
-
-        <Link href={"/register"}>Cadastrar novo Usuario</Link>
       </SafeAreaView>
+      <View style={styles.hori2}>
+        <Text>Don't have an account?</Text>
+        <Link style={styles.braco} href={"/register"}>
+          Sign Up Now
+        </Link>
+      </View>
     </LinearGradient>
   );
 }
@@ -110,10 +119,9 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    flex: 3 / 4,
-    padding: 20,
-    gap: 60,
-    marginTop: 80,
+    flex: 1,
+    gap: 40,
+    marginBottom: 90,
   },
   centrol: {
     alignItems: "center",
@@ -217,5 +225,12 @@ const styles = StyleSheet.create({
   putz: {
     alignItems: "center",
     gap: 20,
+  },
+  hori2: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 70,
+    gap: 5,
   },
 });

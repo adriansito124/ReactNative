@@ -2,8 +2,21 @@ import { FIREBASE_AUTH } from "@/firebaseConfig";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { Image } from "react-native";
+import React from "react";
 import { useEffect, useState } from "react";
-import { View, Text, Alert, SafeAreaView, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Alert,
+  SafeAreaView,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+
+const image = require("../assets/images/facebook.png");
+const image2 = require("../assets/images/google.png");
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -31,7 +44,6 @@ export default function Register() {
         .catch((err) => {
           alert(err.message);
         });
-
     } else {
       alert("As senhas não coincidem!");
     }
@@ -75,15 +87,36 @@ export default function Register() {
               keyboardType="default"
               secureTextEntry={true}
             />
+            <TouchableOpacity style={styles.button} onPress={register}>
+              <Text style={styles.btntext}>Sign Up</Text>
+            </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={register}>
-            <Text style={styles.btntext}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.putz}>
+            <View style={styles.hori}>
+              <View style={styles.risco}></View>
+              <Text style={styles.braco}>Or Login with</Text>
+              <View style={styles.risco}></View>
+            </View>
 
-        <Link href={"/"}>VOLTAR AO LOGIN</Link>
+            <View style={styles.hori}>
+              <TouchableOpacity style={styles.minibutton}>
+                <Image source={image2} style={styles.imagen2} />
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.minibutton}>
+                <Image source={image} style={styles.imagen2} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
       </SafeAreaView>
+      <View style={styles.hori2}>
+        <Text>Already have an account?</Text>
+        <Link style={styles.braco} href={"/"}>
+          Login Now
+        </Link>
+      </View>
     </LinearGradient>
   );
 }
@@ -92,9 +125,9 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    flex: 3 / 4,
-    padding: 20, // Adiciona um pouco de padding
-    gap: 80,
+    flex: 1,
+    gap: 40,
+    marginBottom: 80,
   },
   centrol: {
     alignItems: "center",
@@ -127,8 +160,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#FFFFFFFF",
     backgroundColor: "#D0BEEEFF",
-    borderRadius: 8, // Adiciona bordas arredondadas
-    marginBottom: 5, // Espaçamento entre os inputs
+    borderRadius: 8,
+    marginBottom: 5,
     color: "#ffffff",
   },
   button: {
@@ -137,8 +170,8 @@ const styles = StyleSheet.create({
     height: 45,
     width: 250,
     justifyContent: "center",
-    borderRadius: 8, // Adiciona bordas arredondadas
-    alignItems: "center", // Centraliza o texto no botão
+    borderRadius: 8,
+    alignItems: "center",
 
     shadowColor: "#000000",
     shadowOffset: {
@@ -161,5 +194,49 @@ const styles = StyleSheet.create({
     height: 90,
     width: 67,
   },
-});
+  imagen2: {
+    height: 30,
+    width: 30,
+  },
+  risco: {
+    height: 1,
+    width: 72,
+    backgroundColor: "#ffffff",
+  },
+  hori: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  braco: {
+    color: "#ffffff",
+  },
+  minibutton: {
+    backgroundColor: "#FFFFFF",
+    height: 45,
+    width: 125,
+    justifyContent: "center",
+    borderRadius: 8,
+    alignItems: "center",
 
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.19,
+    shadowRadius: 5.62,
+    elevation: 6,
+  },
+  putz: {
+    alignItems: "center",
+    gap: 20,
+  },
+  hori2: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 70,
+    gap: 5,
+  },
+});
