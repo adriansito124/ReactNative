@@ -1,119 +1,165 @@
-import { FIRESTORE_DB } from '@/firebaseConfig';
-import { onSnapshot, collection, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from "react";
+import {
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+} from "react-native";
+import { FIRESTORE_DB } from "@/firebaseConfig";
+import { onSnapshot, collection } from "firebase/firestore";
+import { Picker } from "@react-native-picker/picker";
 
 interface User {
   id: string;
+  tipo: string;
   name: string;
+  url: string;
 }
 
-export default function HomeScreen() {
-  const [users, setUsers] = useState<User[]>([]); 
-  const [newUser, setNewUser] = useState('');
+interface ProductDetailsProps {
+  product: User;
+  onBack: () => void;
+}
 
-  useEffect(() => {
-      const unsubscribe = onSnapshot(collection(FIRESTORE_DB, "users"), (snapshot) => {
-          const userList: User[] = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as User[];
-          setUsers(userList);
-      });
-
-      return () => unsubscribe();
-  }, []);
-
-  const addUser = async () => {
-      if (newUser === "") {
-          Alert.alert("Por favor, insira um nome.");
-          return;
-      }
-      await addDoc(collection(FIRESTORE_DB, "users"), { name: newUser });
-      setNewUser('');
-  };
-
-  const deleteUser = async (id: string) => {
-      await deleteDoc(doc(FIRESTORE_DB, "users", id));
-  };
-
-  const updateUser = async (id: string) => {
-    if (newUser === "") {
-        Alert.alert("Por favor, insira um novo nome para o usuário.");
-        return;
-    }
-
-    const userRef = doc(FIRESTORE_DB, "users", id);
-
-    await updateDoc(userRef, {
-        name: newUser,
-    });
-
-    setNewUser('');
+const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onBack }) => {
+  return (
+    <View style={styles.detailsContainer}>
+      <Text style={styles.productTitle}>{product.name}</Text>
+      <Text style={styles.productName}>{product.tipo}</Text>
+      <Image 
+        source={{ uri: product.url }} 
+        style={styles.productImage}
+      />
+      <TouchableOpacity onPress={onBack}>
+        <Text style={styles.backButton}>Voltar</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
-  return (
-      <View style={styles.container}>
-          <TextInput
-              style={styles.input}
-              placeholder="Novo Usuário"
-              value={newUser}
-              onChangeText={setNewUser}
-          />
-          <TouchableOpacity style={styles.button} onPress={addUser}>
-              <Text style={styles.buttonText}>Adicionar</Text>
-          </TouchableOpacity>
+export default function HomeScreen() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [tipoSelecionado, setTipoSelecionado] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState<User | null>(null);
 
-          <FlatList
-              data={users}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                  <View style={styles.userItem}>
-                    <Text>{item.id}</Text>
-                      <Text>{item.name}</Text>
-                      <TouchableOpacity onPress={() => deleteUser(item.id)}>
-                          <Text style={styles.deleteButton}>Excluir</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => updateUser(item.id)}>
-                          <Text style={styles.deleteButton}>Atualizar</Text>
-                      </TouchableOpacity>
-                  </View>
-              )}
-          />
-      </View>
+  const filtrado = tipoSelecionado
+    ? users.filter((user) => user.tipo === tipoSelecionado)
+    : users;
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(FIRESTORE_DB, "users"),
+      (snapshot) => {
+        const userList: User[] = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            tipo: doc.id,
+          ...doc.data(),
+        })) as User[];
+        setUsers(userList);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleVisit = (product: User) => {
+    setSelectedProduct(product);
+  };
+
+  const handleBack = () => {
+    setSelectedProduct(null);
+  };
+
+  if (selectedProduct) {
+    return <ProductDetails product={selectedProduct} onBack={handleBack} />;
+  }
+
+  return (
+    <View style={styles.container}>
+        
+      <Picker
+        selectedValue={tipoSelecionado}
+        onValueChange={(itemValue) => setTipoSelecionado(itemValue)}
+        style={styles.input}
+      >
+        <Picker.Item label="Tudo" value="" />
+        <Picker.Item label="Camiseta" value="camiseta" />
+        <Picker.Item label="Blusa" value="blusa" />
+        <Picker.Item label="Bermuda" value="bermuda" />
+        <Picker.Item label="Calça" value="calça" />
+        <Picker.Item label="Jaqueta de couro" value="jaqueta" />
+      </Picker>
+
+      <FlatList
+        data={filtrado}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.userItem}>
+            <Text>{item.tipo}</Text>
+            <Text>{item.name}</Text>
+            <TouchableOpacity onPress={() => handleVisit(item)}>
+              <Text style={styles.visitButton}>Visitar</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-      flex: 1,
-      padding: 20,
-      backgroundColor: '#f5f5f5',
-  },
-  input: {
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 4,
-      height: 40,
-      paddingHorizontal: 10,
-      marginBottom: 10,
-  },
-  button: {
-      backgroundColor: '#4b6beb',
-      height: 40,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: 5,
-  },
-  buttonText: {
-      color: '#fff',
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#f5f5f5",
   },
   userItem: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
-  deleteButton: {
-      color: 'red',
+  visitButton: {
+    backgroundColor: "#4b6beb",
+    height: 30,
+    padding: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+    color: "#ffffff",
   },
-})
+  detailsContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#fff",
+  },
+  productTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  productName: {
+    fontSize: 18,
+  },
+  backButton: {
+    marginTop: 20,
+    color: "#4b6beb",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 4,
+    height: 40,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  productImage: {
+    width: 280, 
+    height: 300, 
+    marginVertical: 10,
+  },
+});

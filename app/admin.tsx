@@ -16,19 +16,21 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  //Picker,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
 interface User {
   id: string;
   name: string;
   tipo: string;
+  url: string;
 }
 
 export default function Admin() {
   const [users, setUsers] = useState<User[]>([]);
   const [newUser, setNewUser] = useState("");
-  const [newTipo, setNewTipo] = useState("");
+  const [newUrl, setNewUrl] = useState("");
+  const [newTipo, setNewTipo] = useState("camiseta");
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -53,8 +55,10 @@ export default function Admin() {
     await addDoc(collection(FIRESTORE_DB, "users"), {
       name: newUser,
       tipo: newTipo,
+      url: newUrl,
     });
     setNewUser("");
+    setNewUrl("");
   };
 
   const deleteUser = async (id: string) => {
@@ -63,7 +67,7 @@ export default function Admin() {
 
   const updateUser = async (id: string) => {
     if (newUser === "") {
-      Alert.alert("Por favor, insira um novo nome para o usuário.");
+      Alert.alert("Por favor, insira um novo nome para o produto.");
       return;
     }
 
@@ -80,17 +84,28 @@ export default function Admin() {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Novo Usuário"
+        placeholder="Novo Produto"
         value={newUser}
         onChangeText={setNewUser}
       />
-      {/* ->Picker<- */}
       <TextInput
         style={styles.input}
-        placeholder="Tipo"
-        value={newTipo}
-        onChangeText={setNewTipo}
+        placeholder="URL Imagem"
+        value={newUrl}
+        onChangeText={setNewUrl}
       />
+      {/* Picker */}
+      <Picker
+        selectedValue={newTipo}
+        style={styles.input}
+        onValueChange={(itemValue) => setNewTipo(itemValue)}
+      >
+        <Picker.Item label="Camiseta" value="camiseta" />
+        <Picker.Item label="Blusa" value="blusa" />
+        <Picker.Item label="Bermuda" value="bermuda" />
+        <Picker.Item label="Calça" value="calça" />
+        <Picker.Item label="Jaqueta de couro" value="jaqueta" />
+      </Picker>
       <TouchableOpacity style={styles.button} onPress={addUser}>
         <Text style={styles.buttonText}>Adicionar</Text>
       </TouchableOpacity>
